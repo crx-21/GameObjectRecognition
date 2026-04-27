@@ -1,0 +1,48 @@
+1. Executive Summary
+Objective: Develop a modular, real-time Computer Vision (CV) prototype capable of detecting player models (Friendlies and Enemies) in Counter-Strike 2 (CS2). The application will render an overlay with bounding boxes around detected entities and display the AI’s confidence score (0-100%).
+Scope: This prototype serves as a standalone vision module that processes visual data via screen capture. It does not read or write into the game’s memory space, ensuring the tech stack remains modular, safe to develop, and easy to integrate into a larger pipeline via standard inter-process communication.
+2. Features & Functionality
+2.1 Core Features
+•	Real-Time Screen Capture: Continuously captures the game window at high frame rates (target 60+ FPS) without severely impacting game performance.
+•	Entity Detection: Utilizes a custom-trained Object Detection model to identify player models.
+•	Friendly vs. Enemy Classification: Differentiates between Counter-Terrorist (CT) and Terrorist (T) models, or uses team-color UI cues to classify entities as friendly or hostile.
+•	Confidence Scoring: Calculates and outputs a confidence percentage (e.g., 92%) for each detection.
+•	Transparent Overlay: Renders an invisible, click-through window over the game client.
+•	Bounding Box Rendering: Draws color-coded boxes (e.g., Red for Enemy, Green for Friendly) and text labels (Class + Confidence) exactly where the entities are on screen.
+3. Technology Stack
+To ensure the prototype is extremely modular, easy to implement, and scalable for a larger project, Python is the primary language. Python boasts the richest ecosystem for AI/CV and allows for rapid prototyping.
+3.1 Stack Breakdown
+•	Programming Language: Python 3.10+
+•	Computer Vision Model: YOLOv8 (by Ultralytics) - State-of-the-art (SOTA) for real-time object detection. It is incredibly fast, easy to train on custom datasets, and provides bounding box coordinates and confidence scores natively.
+•	Screen Capture: DXcam or MSS (Multiple Screen Shots) - DXcam uses the Windows Desktop Duplication API, allowing for lightning-fast screen captures (144+ FPS) directly from the GPU.
+•	Overlay Rendering: PyQt5 or PySide6 (with Windows API extensions) - Allows the creation of borderless, transparent, "always-on-top" windows that are click-through.
+•	Data Processing: OpenCV (cv2) and NumPy - Used to format the captured screen arrays before feeding them into the neural network.
+4. Computer Vision Technology: How It Works
+The core of this prototype relies on Convolutional Neural Networks (CNNs), specifically the YOLO (You Only Look Once) architecture.
+4.1 The AI Pipeline
+1. Image Ingestion: DXcam grabs a frame from the monitor where CS2 is running.
+2. Preprocessing: The frame is resized to the model's expected input resolution (e.g., 640x640).
+3. Forward Pass (Inference): The image is passed through the YOLOv8 neural network. It predicts bounding boxes, confidence scores, and class probabilities simultaneously.
+4. Non-Maximum Suppression (NMS): Filters out redundant boxes, keeping only the one with the highest confidence score.
+5. Output Generation: The model outputs an array of detections (Coordinates, Class_ID, Confidence).
+4.2 Training the Model (Crucial Step)
+•	Data Collection: Gather 1,000 to 5,000 varied screenshots of CS2 gameplay (different maps, lighting, and angles).
+•	Annotation: Use tools like Roboflow or CVAT to draw boxes around players. Label them as enemy or friendly.
+•	Training: Fine-tune a base yolov8n.pt (Nano model for maximum FPS) on this dataset.
+5. System Architecture & Modularity
+To ensure this prototype integrates easily into a larger system, it follows a Producer-Consumer architecture.
+•	Module 1: The Screen Grabber (Producer) -> Runs on its own thread. Captures frames and pushes them to a Thread-safe Queue.
+•	Module 2: The Inference Engine (Worker) -> Pulls frames from the Queue, runs YOLOv8 inference, and outputs a JSON of coordinates and confidence scores.
+•	Module 3: The Overlay (Consumer) -> Reads the coordinates and draws the visual boxes on the transparent PyQt5 window.
+Integration into a Bigger Project: Because the Inference Engine outputs pure data (JSON), you can easily detach Module 3 (the overlay). Route the JSON output from Module 2 via WebSockets, REST API, or shared memory to your main application.
+6. Implementation Steps (MVP)
+1. Environment Setup: pip install ultralytics dxcam opencv-python pyqt5 pywin32
+2. Data Setup: Create a small dataset of 500 images, annotate them, and train a custom YOLOv8n model.
+3. Capture Script: Write a loop using dxcam to capture a specific region of the screen.
+4. Inference Script: Load best.pt using Ultralytics, feed the dxcam frames into it.
+5. Overlay Script: Create a transparent PyQt5 window and draw rectangles.
+6. Optimization: Move inference to the GPU using PyTorch (device='cuda').
+7. Risks & Constraints
+•	Performance Overhead: Running real-time inference and a modern game simultaneously requires a strong GPU. Ensure TensorRT or ONNX Runtime optimizations are used.
+•	Anti-Cheat Considerations: Even though it doesn't read game memory, overlays can flag trust-factor systems. Run in -insecure mode during prototyping.
+•	Visual Clutter: Implement a configurable threshold slider (e.g., > 65% certainty) to prevent false positives.

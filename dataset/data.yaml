@@ -1,0 +1,10 @@
+# dataset/data.yaml
+path: ./dataset  # root directory of your dataset
+train: train  # directory containing your training images
+val: valid  # directory containing your validation images
+
+# Classes
+names:
+  0: Enemy
+  1: Friendly
+  2: Ignored Object 
