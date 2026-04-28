@@ -56,8 +56,8 @@ All settings are in `config.py`:
 
 | Class ID | Name | Color |
 |----------|------|-------|
-| 0 | Enemy | Red (255, 50, 50) |
-| 1 | Friendly | Green (50, 255, 50) |
+| 0 | CT | Red (255, 50, 50) |
+| 1 | T | Green (50, 255, 50) |
 
 ## Development Notes
 

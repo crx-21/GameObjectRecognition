@@ -5,6 +5,6 @@ val: valid  # directory containing your validation images
 
 # Classes
 names:
-  0: Enemy
-  1: Friendly
+  0: CT
+  1: T
   2: Ignored Object 

@@ -66,13 +66,13 @@ except Exception:
 
 # Class names and colors
 CLASS_NAMES = {
-    0: "Enemy",
-    1: "Friendly",
+    0: "CT",
+    1: "T",
 }
 
 COLOR_MAP = {
-    0: (255, 50, 50),     # Enemy: Red
-    1: (50, 255, 50),     # Friendly: Green
+    0: (255, 50, 50),     # CT: Red
+    1: (50, 255, 50),     # T: Green
 }
 
 # Default color if class is not found

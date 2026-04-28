@@ -5,7 +5,7 @@ Real-time Computer Vision prototype for detecting player models in Counter-Strik
 ## Features
 
 - Real-time screen capture via DXcam
-- YOLOv8-based player detection (Enemy / Friendly)
+- YOLOv8-based player detection (CT / T)
 - Transparent click-through overlay with bounding boxes and confidence scores
 
 ## Setup
