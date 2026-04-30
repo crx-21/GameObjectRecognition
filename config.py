@@ -67,7 +67,7 @@ except Exception:
 # Class names and colors
 CLASS_NAMES = {
     0: "CT",
-    1: "T",
+    1: "T"
 }
 
 COLOR_MAP = {

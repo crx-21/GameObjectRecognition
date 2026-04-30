@@ -8,11 +8,11 @@ from ultralytics import YOLO
 
 def train(
     data_yaml: str = os.path.join("dataset", "data.yaml"),
-    model_name: str = "yolov8n.pt",
+    model_name: str = os.path.join("models", "yolov8n.pt"),
     epochs: int = 100,
     imgsz: int = 416,
     batch: int = 16,
-    device: str = "0",
+    device: str = "cpu",
     project: str = "runs/train",
     name: str = "cs2_player_detection",
     patience: int = 20,
@@ -96,7 +96,7 @@ def validate(
     data_yaml: str = os.path.join("dataset", "data.yaml"),
     imgsz: int = 416,
     batch: int = 16,
-    device: str = "0",
+    device: str = "cpu",
 ):
     """
     Validate a trained YOLOv8 model.
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default="yolov8n.pt",
+        default=os.path.join("models", "yolov8n.pt"),
         help="YOLOv8 model variant (yolov8n.pt, yolov8s.pt, yolov8m.pt, etc.)",
     )
     parser.add_argument(
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--device",
         type=str,
-        default="0",
+        default="cpu",
         help="Device to use (cpu, 0, 0,1,2,3)",
     )
     parser.add_argument(

@@ -1,10 +1,10 @@
 # dataset/data.yaml
-path: .  # root directory of your dataset (relative to data.yaml location)
+path: C:/Users/CrX/GameObjectRecognition/dataset  # root directory of your dataset
 train: train/images  # directory containing your training images
-val: valid/images    # directory containing your validation images
+val: valid/images  # directory containing your validation images
 
-# Classes (must match config.py CLASS_NAMES)
-nc: 2
+# Classes
 names:
   0: CT
   1: T
+   
