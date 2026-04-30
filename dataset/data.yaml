@@ -1,7 +1,7 @@
 # dataset/data.yaml
-path: ./dataset  # root directory of your dataset
-train: images/train  # directory containing your training images
-val: images/valid    # directory containing your validation images
+path: .  # root directory of your dataset (relative to data.yaml location)
+train: train/images  # directory containing your training images
+val: valid/images    # directory containing your validation images
 
 # Classes (must match config.py CLASS_NAMES)
 nc: 2
