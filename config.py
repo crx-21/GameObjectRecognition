@@ -8,7 +8,7 @@ import os
 # -----------------------------------------------------------------------------
 
 # Model paths
-MODEL_PATH = os.path.join("models", "yolov8n.pt")
+MODEL_PATH = os.path.join("models", "best.pt")
 
 # -----------------------------------------------------------------------------
 # Capture Settings
@@ -35,7 +35,7 @@ CONFIDENCE_THRESHOLD = 0.45
 IOU_THRESHOLD = 0.5
 
 # Model input size (pixels) - smaller = faster, larger = more accurate
-MODEL_INPUT_SIZE = 416  # Reduced from 640 for better performance
+MODEL_INPUT_SIZE = 640  # Reduced from 640 for better performance
 
 # -----------------------------------------------------------------------------
 # Performance Settings
@@ -53,12 +53,12 @@ DETECTION_QUEUE_SIZE = 4
 # Device Settings
 # -----------------------------------------------------------------------------
 
-# Use GPU if available, otherwise CPU
+# Use GPU if available, otherwise GPU
 try:
     import torch
-    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+    DEVICE = "cuda" if torch.cuda.is_available() else "gpu"
 except Exception:
-    DEVICE = "cpu"
+    DEVICE = "gpu"
 
 # -----------------------------------------------------------------------------
 # Color Map for Bounding Boxes (R, G, B for PyQt5)

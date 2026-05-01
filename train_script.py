@@ -8,14 +8,14 @@ from ultralytics import YOLO
 
 def train(
     data_yaml: str = os.path.join("dataset", "data.yaml"),
-    model_name: str = os.path.join("models", "yolov8n.pt"),
-    epochs: int = 100,
-    imgsz: int = 416,
+    model_name: str = os.path.join("models", "yolov8s.pt"),
+    epochs: int = 150,
+    imgsz: int = 640,
     batch: int = 16,
-    device: str = "cpu",
+    device: str = "0",
     project: str = "runs/train",
     name: str = "cs2_player_detection",
-    patience: int = 20,
+    patience: int = 50,
     save_period: int = 5,
 ):
     """
@@ -27,7 +27,7 @@ def train(
         epochs: Number of training epochs
         imgsz: Input image size for the model
         batch: Batch size for training
-        device: Device to train on ('cpu', '0', '0,1,2,3', etc.)
+        device: Device to train on ('gpu', '0', '0,1,2,3', etc.)
         project: Project directory to save training results
         name: Name of the training run
         patience: Early stopping patience (epochs without improvement)
@@ -55,28 +55,29 @@ def train(
         patience=patience,
         save_period=save_period,
         # Training hyperparameters (tuned for object detection)
-        lr0=0.01,           # Initial learning rate
-        lrf=0.01,           # Final learning rate (lr0 * lrf = final lr)
+        lr0=0.005,        # Lower initial LR for fine-tuning
+        lrf=0.01,         # Final learning rate
         momentum=0.937,     # SGD momentum/Adam beta
         weight_decay=0.0005, # Optimizer weight decay
         warmup_epochs=3.0,   # Warmup epochs
         warmup_momentum=0.8, # Warmup momentum
-        box=7.5,            # Box loss gain
-        cls=0.5,            # Class loss gain
-        dfl=1.5,            # DFL loss gain
+        cls=1.0,          # Higher class loss weight (was 0.5)
+        box=10.0,         # Higher box loss weight (was 7.5)
+        dfl=1.5,          # DFL loss gain
         # Augmentation
         hsv_h=0.015,        # HSV-Hue augmentation
         hsv_s=0.7,          # HSV-Saturation augmentation
         hsv_v=0.4,          # HSV-Value augmentation
-        degrees=0.0,        # Rotation degrees
+        degrees=10.0,        # Rotation degrees
         translate=0.1,      # Translation augmentation
-        scale=0.5,          # Scaling augmentation
+        scale=0.3,          # Scaling augmentation
         shear=0.0,          # Shear augmentation
         perspective=0.0,    # Perspective augmentation
         flipud=0.0,         # Vertical flip probability
         fliplr=0.5,         # Horizontal flip probability
         mosaic=1.0,         # Mosaic augmentation probability
-        mixup=0.0,          # Mixup augmentation probability
+        mixup=0.1,          # Mixup augmentation probability
+        cutmix=0.1,         
         # Other
         verbose=True,
         exist_ok=True,
@@ -94,9 +95,9 @@ def train(
 def validate(
     model_path: str,
     data_yaml: str = os.path.join("dataset", "data.yaml"),
-    imgsz: int = 416,
+    imgsz: int = 640,
     batch: int = 16,
-    device: str = "cpu",
+    device: str = "0",
 ):
     """
     Validate a trained YOLOv8 model.
@@ -149,19 +150,19 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default=os.path.join("models", "yolov8n.pt"),
+        default=os.path.join("models", "yolov8s.pt"),
         help="YOLOv8 model variant (yolov8n.pt, yolov8s.pt, yolov8m.pt, etc.)",
     )
     parser.add_argument(
         "--epochs",
         type=int,
-        default=100,
+        default=150,
         help="Number of training epochs",
     )
     parser.add_argument(
         "--imgsz",
         type=int,
-        default=416,
+        default=640,
         help="Input image size",
     )
     parser.add_argument(
@@ -173,8 +174,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--device",
         type=str,
-        default="cpu",
-        help="Device to use (cpu, 0, 0,1,2,3)",
+        default="0",
+        help="Device to use (0, 0,1,2,3, cpu)",
     )
     parser.add_argument(
         "--project",
@@ -191,7 +192,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--patience",
         type=int,
-        default=20,
+        default=50,
         help="Early stopping patience",
     )
 

@@ -155,8 +155,8 @@ class InferenceEngine:
 
             for box in boxes:
                 # Bounding box coordinates (top-left x, top-left y, bottom-right x, bottom-right y)
-                x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
-                confidence = float(box.conf[0].cpu().numpy())
+                x1, y1, x2, y2 = box.xyxy[0].gpu().numpy().astype(int)
+                confidence = float(box.conf[0].gpu().numpy())
                 class_id = int(box.cls[0].cpu().numpy())
                 class_name = config.get_class_name(class_id)
 
