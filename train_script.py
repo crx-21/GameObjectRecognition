@@ -3,12 +3,14 @@
 
 import os
 import argparse
+import shutil
+# pyrefly: ignore [missing-import]
 from ultralytics import YOLO
 
 
 def train(
     data_yaml: str = os.path.join("dataset", "data.yaml"),
-    model_name: str = os.path.join("models", "yolov8s.pt"),
+    model_name: str = os.path.join("models", "best.pt"),
     epochs: int = 150,
     imgsz: int = 640,
     batch: int = 16,
@@ -45,7 +47,6 @@ def train(
 
     results = model.train(
         data=data_yaml,
-        model=model_name,
         epochs=epochs,
         imgsz=imgsz,
         batch=batch,
@@ -88,6 +89,13 @@ def train(
     print(f"Results saved to: {os.path.join(project, name)}")
     print(f"Best model: {os.path.join(project, name, 'weights', 'best.pt')}")
     print(f"Last model: {os.path.join(project, name, 'weights', 'last.pt')}")
+
+    # Copy the best model to the models/ directory
+    best_model_path = os.path.join(project, name, 'weights', 'best.pt')
+    dest_model_path = os.path.join("models", "best.pt")
+    os.makedirs("models", exist_ok=True)
+    shutil.copy(best_model_path, dest_model_path)
+    print(f"Copied best model to: {dest_model_path}")
 
     return results
 
@@ -150,8 +158,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default=os.path.join("models", "yolov8s.pt"),
-        help="YOLOv8 model variant (yolov8n.pt, yolov8s.pt, yolov8m.pt, etc.)",
+        default=os.path.join("models", "best.pt"),
+        help="Path to model weights for fine-tuning (e.g., models/best.pt) or a YOLOv8 variant",
     )
     parser.add_argument(
         "--epochs",
